@@ -1,42 +1,101 @@
-const Form = () => {
-    return (
-        {/* <!-- Developer Info and Link Section --> */}
-        
-        
-    //     <section class="section journal-section">
-    //       <div class="container">
-    //         <div class="container-row container-row-journal">
-    //           <div class="container-item container-item-journal">
-    //             <form id="entryForm" onsubmit="submitForm(event)">
-    //               <label for="entry-title" class="journal-label">Entry Title</label>
-    //               <input
-    //                 type="text"
-    //                 name="entry-title"
-    //                 id="entry-title"
-    //                 class="entry-text-title"
-    //                 placeholder="Name of entry ✏️"
-    //               />
-    //               <label for="entry" class="journal-label">Today's Entry</label>
-    //               <textarea
-    //                 name="daily-entry"
-    //                 id="entry"
-    //                 class="entry-text-box"
-    //                 placeholder="What's on your mind today? 💭"
-    //               ></textarea>
-    //               <button class="btn-main entry-submit-btn" type="submit">Submit</button>
-    //             </form>
-    //           </div>
-    //         </div>
-    //       </div>
-    //     </section>
-    
-    //      <!-- Journal Entry Results --> 
-    //     <section class="section sectionEntryResults" id="entryResultsSection">
-    //       <div class="container">
-    //         <div class="container-row entryResultRow"></div>
-    //       </div>
-    //     </section></div>
-     )
-}
+import React, { useState, useEffect } from "react";
 
-export default Form
+const Form = () => {
+  const [entries, setEntries] = useState(() => {
+    const storedEntries = localStorage.getItem("entries");
+    return storedEntries ? JSON.parse(storedEntries) : [];
+  });
+  const [newDate, setNewDate] = useState("");
+  const [newTitle, setNewTitle] = useState("");
+  const [newText, setNewText] = useState("");
+
+  useEffect(() => {
+    localStorage.setItem("entries", JSON.stringify(entries));
+  }, [entries]);
+
+  function handleDateChange(event) {
+    setNewDate(event.target.value);
+  }
+
+  function handleTitleChange(event) {
+    setNewTitle(event.target.value);
+  }
+
+  function handleTextChange(event) {
+    setNewText(event.target.value);
+  }
+
+  function addEntry() {
+    if (newDate.trim() !== "" && newTitle.trim() !== "" && newText.trim() !== "") {
+      const newEntry = { date: newDate, title: newTitle, text: newText };
+      setEntries([...entries, newEntry]);
+      setNewDate("");
+      setNewTitle("");
+      setNewText("");
+    }
+  }
+
+  function deleteEntry(index) {
+    setEntries(entries.filter((entry, i) => i !== index));
+  }
+
+  return (
+    <div className="flex justify-center mt-20">
+      <div className="personal-diary">
+        <h1 className="font-bold m-4 text-3xl">Personal Diary</h1>
+        
+        {/* Date Input */}
+        <div className="mb-4">
+          <input
+            type="date"
+            value={newDate}
+            onChange={handleDateChange}
+            className="input input-bordered input-accent w-full max-w-xs"
+          />
+        </div>
+        
+        {/* Title Input */}
+        <div className="mb-4">
+          <input
+            type="text"
+            value={newTitle}
+            onChange={handleTitleChange}
+            placeholder="Enter title"
+            className="input input-bordered input-accent w-full max-w-xs"
+          />
+        </div>
+        
+        {/* Textarea Input */}
+        <div className="mb-4">
+          <textarea
+            value={newText}
+            onChange={handleTextChange}
+            placeholder="Enter your text"
+            className="textarea textarea-bordered textarea-accent w-full max-w-xs"
+            rows="4"
+          />
+        </div>
+
+        <button className="btn btn-outline btn-accent" onClick={addEntry}>
+          Add Entry
+        </button>
+
+        <ol className="mt-4">
+          {entries.map((entry, index) => (
+            <li key={index} className="mb-4">
+              <div className="font-semibold">
+                {entry.date} - {entry.title}
+              </div>
+              <p>{entry.text}</p>
+              <button className="btn btn-error btn-sm mt-1" onClick={() => deleteEntry(index)}>
+                Delete
+              </button>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  );
+};
+
+export default Form;
