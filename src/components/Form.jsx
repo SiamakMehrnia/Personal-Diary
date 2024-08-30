@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const Form = () => {
   const [entries, setEntries] = useState(() => {
@@ -26,9 +27,13 @@ const Form = () => {
   }
 
   function addEntry() {
-    if (newDate.trim() !== "" && newTitle.trim() !== "" && newText.trim() !== "") {
+    if (
+      newDate.trim() !== "" &&
+      newTitle.trim() !== "" &&
+      newText.trim() !== ""
+    ) {
       const newEntry = { date: newDate, title: newTitle, text: newText };
-      setEntries([...entries, newEntry]);
+      setEntries([newEntry, ...entries]);
       setNewDate("");
       setNewTitle("");
       setNewText("");
@@ -42,9 +47,9 @@ const Form = () => {
   return (
     <div className="flex justify-center mt-20">
       <div className="personal-diary">
-        <h1 className="font-bold m-4 text-3xl">Personal Diary</h1>
-        
-        {/* Date Input */}
+        <h1 className="font-bold m-4 text-3xl p-4">Personal Diary</h1>
+
+        {/* Form Inputs */}
         <div className="mb-4">
           <input
             type="date"
@@ -53,8 +58,7 @@ const Form = () => {
             className="input input-bordered input-accent w-full max-w-xs"
           />
         </div>
-        
-        {/* Title Input */}
+
         <div className="mb-4">
           <input
             type="text"
@@ -64,8 +68,7 @@ const Form = () => {
             className="input input-bordered input-accent w-full max-w-xs"
           />
         </div>
-        
-        {/* Textarea Input */}
+
         <div className="mb-4">
           <textarea
             value={newText}
@@ -80,14 +83,17 @@ const Form = () => {
           Add Entry
         </button>
 
+        {/* List of Entries */}
         <ol className="mt-4">
           {entries.map((entry, index) => (
             <li key={index} className="mb-4">
-              <div className="font-semibold">
+              <Link to={`/entry/${index}`} className="font-semibold">
                 {entry.date} - {entry.title}
-              </div>
-              <p>{entry.text}</p>
-              <button className="btn btn-error btn-sm mt-1" onClick={() => deleteEntry(index)}>
+              </Link>
+              <button
+                className="btn btn-error btn-sm ml-2"
+                onClick={() => deleteEntry(index)}
+              >
                 Delete
               </button>
             </li>
