@@ -1,12 +1,25 @@
-import Journal from "./components/Journal";
-import Search from "./components/Search";
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+} from "react-router-dom";
 import Form from "./components/Form";
-function App() {
-  return (
+import EntryDetail from "./components/Journal";
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
     <>
-      <Form />
+      {/* Main */}
+      <Route path="/" element={<Form />} />
+      {/* Dynamik Details */}
+      <Route path="/entry/:id" element={<EntryDetail />} />
     </>
-  );
-}
+  )
+);
+
+const App = () => {
+  return <RouterProvider router={router} />;
+};
 
 export default App;
